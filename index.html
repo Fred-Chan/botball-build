@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botball PRO 结构参考索引</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --tag-bg: #eff6ff;
+            --tag-text: #1d4ed8;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header .pan-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .header .pan-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .controls {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .results-count {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-left: auto;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: block;
+        }
+
+        .card-image-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .year-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.35rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .year-badge.older {
+            background: var(--secondary);
+        }
+
+        .date-badge {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .team-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            /* 文字完全显示，不截断 */
+        }
+
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .keyword-tag {
+            padding: 0.2rem 0.5rem;
+            background: #f1f5f9;
+            color: var(--text-light);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .card-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .filename {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-family: monospace;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .stats {
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .filter-group {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .results-count {
+                width: 100%;
+                text-align: center;
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .filename {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🤖 Botball PRO 结构参考</h1>
+        <p>汇集全球优秀Botball机器人的结构设计、执行器方案与代码实现</p>
+        <a href="https://pan.baidu.com/s/1y2wKwvQjVT-4j-G5WdCwcg?pwd=8hax" target="_blank" class="pan-link">
+            📦 访问百度网盘下载完整视频
+        </a>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalCount">47</div>
+                <div class="stat-label">视频总数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">2026</div>
+                <div class="stat-label">最新赛季</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索视频标题、团队或描述...">
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-year="all">全部</button>
+                <button class="filter-btn" data-year="2026">2026</button>
+                <button class="filter-btn" data-year="2025">2025</button>
+                <button class="filter-btn" data-year="2024">2024</button>
+            </div>
+            <div class="results-count" id="resultsCount">显示 47 个视频</div>
+        </div>
+
+        <div class="video-grid" id="videoGrid"></div>
+        
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="icon">🔍</div>
+            <h3>未找到匹配的视频</h3>
+            <p>请尝试其他关键词或筛选条件</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>数据来源：<a href="https://www.yuque.com/botball/document/robot_example" target="_blank">语雀文档</a> | 
+        网盘链接：<a href="https://pan.baidu.com/s/1y2wKwvQjVT-4j-G5WdCwcg?pwd=8hax" target="_blank">Botball PRO结构参考</a></p>
+    </footer>
+
+    <script>
+        // 直接嵌入视频数据，避免跨域问题
+        const videoData = {
+          "videos": [
+            {
+              "id": "2026-001",
+              "year": 2026,
+              "date": "20260416",
+              "title": "MaximusGamer-Botball P2 Documentation Video",
+              "team": "Los Altos Community Team 0510",
+              "description": "团队的第一台机器人负责锥形物搬运：从下层出发箱出发，拾取交通锥，将其放置到上层启动区。该机器人有两个执行器：驱动轮和抓爪，其中抓爪是核心部件。第二台机器人专门收集 Bucky 球（游戏中得分最高的道具之一），使用两个舵机驱动的3D打印抓爪和电机驱动的轮子。",
+              "keywords": ["锥形物", "抓爪", "Bucky球", "3D打印"],
+              "imageUrl": "./images/2026-001.png"
+            },
+            {
+              "id": "2026-002",
+              "year": 2026,
+              "date": "20260416",
+              "title": "2026 TRMS Botball Video Documentation",
+              "team": "Thomas Russell School (TRMS) 902",
+              "description": "机器人的主要目标：从场地上方区域收集所有小球，抓取物体、推动物体以及沿线追踪。程序开源在 GitHub。",
+              "keywords": ["小球收集", "沿线追踪", "开源"],
+              "imageUrl": "./images/2026-002.png"
+            },
+            {
+              "id": "2026-003",
+              "year": 2026,
+              "date": "20260416",
+              "title": "Botball LACT 0338 P2 Documentation",
+              "team": "LACT 0338",
+              "description": "第一台机器人负责按颜色分拣小球。通过循线导航，使用前端一个带有 3D 打印楔形块的爪形装置，在移动过程中将小球分拣到对应两侧。机器人后部装有两个侧翼，用于与托盘接口，最终接收排好序的小球。第二台机器人负责从仓库工具处收集所有小球，随后导航与 Botguy 会合，并移开绿色方块以清理路径。使用刷门机构取回 Botguy，等待第一台机器人完全展开包装箱后，将货盘投入箱内，并把 Botguy 放置于乘分区。",
+              "keywords": ["颜色分拣", "循线导航", "3D打印", "托盘"],
+              "imageUrl": "./images/2026-003.png"
+            },
+            {
+              "id": "2026-004",
+              "year": 2026,
+              "date": "20260416",
+              "title": "2026-ECER-HTL-roller",
+              "team": "ECER-HTL",
+              "description": "3D打印的滚筒收集器",
+              "keywords": ["滚筒收集器", "3D打印"],
+              "imageUrl": "./images/2026-004.png"
+            },
+            {
+              "id": "2026-005",
+              "year": 2026,
+              "date": "20260406",
+              "title": "Period 2 Documentation for 2026 KIPR Botball",
+              "team": "Malden Highschool 574",
+              "description": "机器人1：主要任务是收集小球和交通锥，然后将它们推过坡道送入上方的起始箱。执行器设计灵感来源于暴风雪期间的铲雪车，采用雪犁式大型推板，并在两侧加装挡板防止物品滑落。机器人配备了距离传感器，用于检测第二台机器人的位置，以便判断何时转向并开始上坡。机器人2：任务是接住从坡道上滚落下来的圆筒，然后将它们分别放置到两个储存区。核心执行器是一个 3D 打印结构，内部带有旋转臂用于暂存 PVC 管，再由外部臂将其定向放入指定位置的鼓形储存槽。",
+              "keywords": ["雪犁式推板", "距离传感器", "圆筒分类", "3D打印"],
+              "imageUrl": "./images/2026-005.png"
+            },
+            {
+              "id": "2026-006",
+              "year": 2026,
+              "date": "20260403",
+              "title": "Botball Period 2 Documentation",
+              "team": "Annandale High School ATOMS 0274",
+              "description": "使用简单机械爪抓取方块和Botguy",
+              "keywords": ["机械爪", "方块", "Botguy"],
+              "imageUrl": "./images/2026-006.png"
+            },
+            {
+              "id": "2026-007",
+              "year": 2026,
+              "date": "20260403",
+              "title": "Bald Eagle Area (Team 86) - Period 2 Mechanical Video",
+              "team": "Bald Eagle Area Team 86",
+              "description": "机器人 \"Spot Jr.\"，其设计目标是利用配备导轨的铲斗，在上层甲板捡取小球，将其运送下坡道，再通过铲斗进行收集。",
+              "keywords": ["铲斗", "导轨", "小球收集"],
+              "imageUrl": "./images/2026-007.png"
+            },
+            {
+              "id": "2026-008",
+              "year": 2026,
+              "date": "20260403",
+              "title": "Botall Documentation Period 2 North County Robotics Team 593",
+              "team": "North County Robotics Team 593",
+              "description": "核心功能是收集全部 8 个圆筒，通过摄像头识别颜色后，利用一个单电机驱动的旋转爪臂将圆筒按颜色分类放置到对应储存柱上。",
+              "keywords": ["圆筒收集", "颜色识别", "摄像头", "旋转爪臂"],
+              "imageUrl": "./images/2026-008.png"
+            },
+            {
+              "id": "2026-009",
+              "year": 2026,
+              "date": "20260331",
+              "title": "2026 Botball Lexington Dawgbotic's",
+              "team": "Lexington Dawgbotic's",
+              "description": "大机器人的齿轮爪专为抓取方块设计，并能将挡路的道具移开以确保自身不被卡住。小机器人主要功能是拾取交通锥和其他道具，开合装置位于前方。机器人设计了多个部件以防止道具进入其底部后方、避免被轮子卡住，并具备上下移动的能力。",
+              "keywords": ["齿轮爪", "方块抓取", "交通锥"],
+              "imageUrl": "https://cdn.nlark.com/yuque/0/2025/png/478999/1774921596432-0f4eb9ea-75d4-4fde-ac76-3a267f60cb88.png"
+            },
+            {
+              "id": "2026-010",
+              "year": 2026,
+              "date": "20260331",
+              "title": "Treasure Valley Robotics 932's 2026 Botball Period 2 Submission",
+              "team": "Treasure Valley Robotics 932",
+              "description": "机器人A负责从鼓站收集六个鼓并放入下方启动区，而机器人B则负责清理甲板、收集两个交通锥并携带它们进入上方启动区。展示了机器人B的执行器设计和机器人A可调节的3D打印末端执行器的设计、测试与优化过程。",
+              "keywords": ["鼓站收集", "交通锥", "3D打印", "末端执行器"],
+              "imageUrl": "https://cdn.nlark.com/yuque/0/2025/png/478999/1774921547944-b692bed6-d09a-4547-9589-9c4078660b31.png"
+            },
+            {
+              "id": "2026-011",
+              "year": 2026,
+              "date": "20260311",
+              "title": "Post 1010 Botball 2026 DC Regional Tournament - Mechanical Video",
+              "team": "Post 1010",
+              "description": "第一台机器人从上层甲板的启动区出发，主要任务是取回立方体、清除上层仓库、并将额外托盘推至仓库后方，最后返回启动区。第二台机器人从下层启动区出发，拾取并向上层启动区放置两个锥体。",
+              "keywords": ["立方体取回", "仓库清理", "托盘推送"],
+              "imageUrl": "https://cdn.nlark.com/yuque/0/2025/png/478999/1774921750063-219e9cff-8caa-4089-ae35-79ad533c8eb9.png"
+            },
+            {
+              "id": "2026-012",
+              "year": 2026,
+              "date": "20260311",
+              "title": "2026 Botball Period 2 Documentation - Stratford Coders 828",
+              "team": "Stratford Coders 828",
+              "description": "简单抓取结构，使用3D打印的手型结构完成抓取。",
+              "keywords": ["手型结构", "3D打印", "简单抓取"],
+              "imageUrl": "https://cdn.nlark.com/yuque/0/2025/png/478999/1773204367310-67111452-a15f-47f4-8720-6dd08aa216b3.png"
+            },
+            {
+              "id": "2025-001",
+              "year": 2025,
+              "date": "20250712",
+              "title": "Botball国际大会优秀结构视频",
+              "team": "Botball国际大会",
+              "description": "更新了Botball国际大会的优秀结构照片和视频，精彩的冠军亚军巅峰对决，1004分vs1014分。",
+              "keywords": ["国际大会", "冠军", "比赛"],
+              "imageUrl": "./images/2025-001.png"
+            },
+            {
+              "id": "2025-002",
+              "year": 2025,
+              "date": "20250411",
+              "title": "Botball Period 2 Documentation - JGMS Team 37",
+              "team": "JGMS Team 37",
+              "description": "非常简单的机器人方案，抓取瓶子放到饮料区。",
+              "keywords": ["瓶子抓取", "饮料区", "简单方案"],
+              "imageUrl": "./images/2025-002.png"
+            },
+            {
+              "id": "2025-003",
+              "year": 2025,
+              "date": "20250411",
+              "title": "Period 2 Documentation Team 249 - The Giggle Gang - MAGNUM",
+              "team": "Great Mills High School Team 249",
+              "description": "抓取土豆，制作薯条的方案。使用微型舵机控制爪子的开合，以及一个爪子来拾取实际的土豆。",
+              "keywords": ["土豆抓取", "微型舵机", "薯条方案"],
+              "imageUrl": "./images/2025-003.png"
+            },
+            {
+              "id": "2025-004",
+              "year": 2025,
+              "date": "20250411",
+              "title": "Period 2 Documentation Team 249 - The Giggle Gang - TROJAN",
+              "team": "Great Mills High School Team 249",
+              "description": "使用3D打印件增加组件高度，抓取冰块。我们在爪子中间增加了一个舵机，使爪子更加灵活，能够将饮料向后放入杯中。",
+              "keywords": ["冰块抓取", "3D打印", "饮料放置"],
+              "imageUrl": "./images/2025-004.png"
+            },
+            {
+              "id": "2025-005",
+              "year": 2025,
+              "date": "20250411",
+              "title": "Team 250 - Botball Mechanics and Code Review (Robot #1)",
+              "team": "Team 250",
+              "description": "针对收集小球的执行器优化。改进后的设计使用更大的杠杆臂和瓦楞塑料矩形盒子，确保手掌在机器人移动时不会掉出来。",
+              "keywords": ["小球收集", "执行器优化", "杠杆臂"],
+              "imageUrl": "./images/2025-005.png"
+            },
+            {
+              "id": "2025-006",
+              "year": 2025,
+              "date": "20250411",
+              "title": "TJHSST Botball Documentation 2025 P2",
+              "team": "TJHSST Team 142",
+              "description": "1号车收集主菜（汉堡），2号车收集小球。展示了主菜爪和瓶子臂+爪的末端执行器设计。",
+              "keywords": ["主菜收集", "汉堡爪", "小球收集"],
+              "imageUrl": "./images/2025-006.png"
+            },
+            {
+              "id": "2025-007",
+              "year": 2025,
+              "date": "20250411",
+              "title": "Team 250 - Botball Mechanics and Code Review (Robot #2)",
+              "team": "Team 250",
+              "description": "机器人收集主菜放到托盘。展示了测试程序：将机器人放置在起始位置，运行代码并启动计时器，观察爪子是否能在120秒内完成拾取主菜的动作。",
+              "keywords": ["主菜收集", "托盘放置", "测试程序"],
+              "imageUrl": "./images/2025-007.png"
+            },
+            {
+              "id": "2025-008",
+              "year": 2025,
+              "date": "20250411",
+              "title": "YMWIC Botball 2025 Documentation #2",
+              "team": "YMWIC",
+              "description": "收集饮料杯，使用硬币配重。",
+              "keywords": ["饮料杯收集", "硬币配重"],
+              "imageUrl": "./images/2025-008.png"
+            },
+            {
+              "id": "2025-009",
+              "year": 2025,
+              "date": "20250411",
+              "title": "Robotics check in period 2 team 71",
+              "team": "Team 71",
+              "description": "优化的机械爪，抓取泡菜（黄瓜）。这个略显笨重的机械爪虽然体积较大，但能稳稳抓起番茄和黄瓜而不会掉落。",
+              "keywords": ["机械爪", "黄瓜抓取", "泡菜"],
+              "imageUrl": "./images/2025-009.png"
+            },
+            {
+              "id": "2025-010",
+              "year": 2025,
+              "date": "20250411",
+              "title": "Botball 2025 DC Regional Tournament - Post 1010 Mechanical Video",
+              "team": "Post 1010",
+              "description": "抓取Botguy。通过螺母和金属轴连接的钩状科技件构成主体，搭配橡皮筋增强稳定性和抓握力。",
+              "keywords": ["Botguy抓取", "钩状结构", "橡皮筋"],
+              "imageUrl": "./images/2025-010.png"
+            },
+            {
+              "id": "2025-011",
+              "year": 2025,
+              "date": "20250324",
+              "title": "2025 Period 2 Documentation Submission - Treasure Valley Robotics",
+              "team": "Treasure Valley Robotics",
+              "description": "机器人A的抓取六个瓶子并将其放入饮料站，机器人B的抓取土豆并将其放入炸锅。",
+              "keywords": ["瓶子收集", "饮料站", "土豆", "炸锅"],
+              "imageUrl": "./images/2025-011.png"
+            },
+            {
+              "id": "2025-012",
+              "year": 2025,
+              "date": "20250324",
+              "title": "Botball Litec ME 2025 - 0628 Kurz Schluss Kimmando",
+              "team": "Lolo Staufer",
+              "description": "使用3D打印结构，完成配菜任务，以及用3D打印机构抓取瓶子。",
+              "keywords": ["3D打印", "配菜任务", "瓶子抓取"],
+              "imageUrl": "./images/2025-012.png"
+            },
+            {
+              "id": "2025-013",
+              "year": 2025,
+              "date": "20250311",
+              "title": "2025 Botball Period 2 Mechanical Video and Code Review",
+              "team": "",
+              "description": "机械爪主体为可上下移动的箱型结构，通过开合动作抓取水瓶，最终将瓶子放入平台。清理厨房地板上的调味品，然后让厨师完成服务。",
+              "keywords": ["箱型机械爪", "水瓶抓取", "调味品清理"],
+              "imageUrl": "./images/2025-013.png"
+            },
+            {
+              "id": "2025-014",
+              "year": 2025,
+              "date": "20250311",
+              "title": "2025 Kiamichi Tech Botball Submission - Documentation #2",
+              "team": "Kiamichi Tech",
+              "description": "机器人A完成板路挑战，抓取并放置3个主菜，收集侧面物体放入托盘，时间允许时处理土豆获取额外积分。机器人B收集调味品放入托盘，抓取蓝色瓶子存放冰箱区域。",
+              "keywords": ["板路挑战", "主菜放置", "托盘收集", "冰箱区域"],
+              "imageUrl": "./images/2025-014.png"
+            },
+            {
+              "id": "2024-001",
+              "year": 2024,
+              "date": "20240416",
+              "title": "TJ Botball Documentation Video",
+              "team": "Thomas Jefferson High School",
+              "description": "来自Thomas Jefferson High School的方案。大机器人使用线性滑动系统完成泡沫条任务，小型机器人使用刨形设计推动岩石并捡起立方体和蓝色棒棒，使用可折叠臂和夹子捡起立方体和蓝色海绵球。",
+              "keywords": ["线性滑动", "泡沫条", "刨形设计", "可折叠臂"],
+              "imageUrl": "./images/2024-001.png"
+            },
+            {
+              "id": "2024-002",
+              "year": 2024,
+              "date": "20240416",
+              "title": "Botball 2024 Period 2 Documentation Portsmouth Abbey 461",
+              "team": "Portsmouth Abbey 461",
+              "description": "来自Portsmouth Abbey 461队的方案。小机器人逆时针转动，用简单的结构完成收集任务。背后的平板结构用于方便靠PVC管完成校正。大机器人使用了导轨来完成高处方块的抓取。",
+              "keywords": ["简单结构", "PVC管校正", "导轨", "高处方块"],
+              "imageUrl": "./images/2024-002.png"
+            },
+            {
+              "id": "2024-003",
+              "year": 2024,
+              "date": "20240416",
+              "title": "FDR Robotics Botball",
+              "team": "FDR Robotics",
+              "description": "FDR队的机器人有两个主要特点：前方的道具分类器和尾部。道具分类器使用剪刀机构，可以将岩石和海绵球分开。尾部可以抬起太阳能板。",
+              "keywords": ["道具分类器", "剪刀机构", "岩石分离", "太阳能板"],
+              "imageUrl": "./images/2024-003.png"
+            },
+            {
+              "id": "2024-004",
+              "year": 2024,
+              "date": "20240416",
+              "title": "Botball 2023-2024 Mechanical Review",
+              "team": "Secaucus High School 0759",
+              "description": "Secaucus High School 0759队的方案：小机器人负责打开和关闭气闸舱，大机器人负责捡起淡蓝色和深蓝色的海绵球，并将它们放入气闸舱。",
+              "keywords": ["气闸舱", "海绵球", "蓝色球"],
+              "imageUrl": "./images/2024-004.png"
+            },
+            {
+              "id": "2024-005",
+              "year": 2024,
+              "date": "20240424",
+              "title": "Botball 2024 DC Regional Tournament - Post 1010 Team 160 Promotional Video",
+              "team": "Post 1010 Team 160",
+              "description": "在小车上使用V型结构来辅助定位，将小木头人成功放入旗杆基站；大机器人使用了巧妙的齿轮结构实现了轻量化，并用滑杆传感器返回机械臂的姿态。",
+              "keywords": ["V型结构", "旗杆基站", "齿轮结构", "滑杆传感器"],
+              "imageUrl": "./images/2024-005.png"
+            },
+            {
+              "id": "2024-006",
+              "year": 2024,
+              "date": "20240424",
+              "title": "Botball 2024 DC Regional Tournament - Post 1010 Team 160 Mechanical Video",
+              "team": "Post 1010 Team 160",
+              "description": "大机器人使用巧妙的齿轮结构实现轻量化设计，并用滑杆传感器返回机械臂的姿态。",
+              "keywords": ["齿轮结构", "轻量化", "滑杆传感器", "机械臂"],
+              "imageUrl": "./images/2024-006.png"
+            },
+            {
+              "id": "2024-007",
+              "year": 2024,
+              "date": "20240424",
+              "title": "Botball 2024 Period 3 Documentation",
+              "team": "Portsmouth Abbey 461",
+              "description": "分享了两种抓取方块的简单结构。",
+              "keywords": ["方块抓取", "简单结构"],
+              "imageUrl": "./images/2024-007.png"
+            },
+            {
+              "id": "2024-008",
+              "year": 2024,
+              "date": "20240424",
+              "title": "Botball period 3 Submission '24",
+              "team": "",
+              "description": "分享了一个标准的经验总结环节。",
+              "keywords": ["经验总结"],
+              "imageUrl": "./images/2024-008.png"
+            },
+            {
+              "id": "2024-009",
+              "year": 2024,
+              "date": "20240424",
+              "title": "2024 P3 Lessons Learned Video Team 249",
+              "team": "Team 249",
+              "description": "Create机器人使用了用乐高搭建收集器，在小车上搭建了垂直升降的抓取结构。",
+              "keywords": ["乐高收集器", "垂直升降", "抓取结构"],
+              "imageUrl": "./images/2024-009.png"
+            },
+            {
+              "id": "2024-010",
+              "year": 2024,
+              "date": "20240303",
+              "title": "period 7 project plan scorpion hs0268",
+              "team": "HS0268",
+              "description": "抓取结构由HS0720团队搭建，执行器的结构像一个长颈鹿。",
+              "keywords": ["长颈鹿结构", "执行器"],
+              "imageUrl": "./images/2024-010.png"
+            },
+            {
+              "id": "2024-011",
+              "year": 2024,
+              "date": "20240303",
+              "title": "period 2 project plan giraffe hs0720",
+              "team": "HS0720",
+              "description": "这个爪子结构被HS0468团队称为\"蝎子\"，它像蝎子的尾巴，有两个活动点。",
+              "keywords": ["蝎子结构", "双活动点", "爪子"],
+              "imageUrl": "./images/2024-011.png"
+            },
+            {
+              "id": "2024-012",
+              "year": 2024,
+              "date": "2024",
+              "title": "Botball - Various Teams",
+              "team": "Various",
+              "description": "Botball综合视频",
+              "keywords": ["综合"]
+            },
+            {
+              "id": "2024-013",
+              "year": 2024,
+              "date": "2024",
+              "title": "BOTBALL P2 submission",
+              "team": "",
+              "description": "P2阶段提交视频",
+              "keywords": ["P2阶段"]
+            },
+            {
+              "id": "2024-014",
+              "year": 2024,
+              "date": "2024",
+              "title": "Desi Bots LACT-0338",
+              "team": "LACT-0338",
+              "description": "Desi Bots团队的LACT-0338视频",
+              "keywords": []
+            },
+            {
+              "id": "2024-015",
+              "year": 2024,
+              "date": "2024",
+              "title": "LQHS Botball mafia period 2 documentation-24",
+              "team": "LQHS",
+              "description": "LQHS Botball mafia团队的P2文档",
+              "keywords": []
+            },
+            {
+              "id": "2024-016",
+              "year": 2024,
+              "date": "2024",
+              "title": "P2 Documentation for BOTBALL 2024",
+              "team": "",
+              "description": "2024 BOTBALL P2文档",
+              "keywords": ["P2文档"]
+            },
+            {
+              "id": "2024-017",
+              "year": 2024,
+              "date": "2024",
+              "title": "Team 861 Period 2 Video Submission",
+              "team": "Team 861",
+              "description": "Team 861的P2视频提交",
+              "keywords": []
+            },
+            {
+              "id": "2024-018",
+              "year": 2024,
+              "date": "2024",
+              "title": "Xavier Bot Ball 2024",
+              "team": "Xavier",
+              "description": "Xavier的2024 Bot Ball视频",
+              "keywords": []
+            },
+            {
+              "id": "2024-019",
+              "year": 2024,
+              "date": "2024",
+              "title": "Bald Eagle Area #86 Botball Period 2 Mechanics Video",
+              "team": "Bald Eagle Area #86",
+              "description": "Bald Eagle Area #86的P2机械视频",
+              "keywords": ["机械视频"]
+            },
+            {
+              "id": "2024-020",
+              "year": 2024,
+              "date": "2024",
+              "title": "2024 Botball Iowa",
+              "team": "",
+              "description": "2024爱荷华州Botball比赛",
+              "keywords": ["爱荷华"]
+            },
+            {
+              "id": "2024-021",
+              "year": 2024,
+              "date": "2024",
+              "title": "2024 - Team 700 - Onsite Presentation - Idaho Regional Tournament",
+              "team": "Team 700",
+              "description": "Team 700在爱达荷州区域赛的现场演示",
+              "keywords": ["爱达荷", "现场演示", "区域赛"]
+            }
+          ]
+        };
+
+        let videos = videoData.videos;
+        let currentYear = 'all';
+        let searchTerm = '';
+
+        function loadData() {
+            document.getElementById('totalCount').textContent = videos.length;
+            renderVideos();
+        }
+
+        function filterVideos() {
+            let filtered = videos;
+
+            if (currentYear !== 'all') {
+                filtered = filtered.filter(v => v.year.toString() === currentYear);
+            }
+
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filtered = filtered.filter(v => 
+                    v.title.toLowerCase().includes(term) ||
+                    v.team.toLowerCase().includes(term) ||
+                    v.description.toLowerCase().includes(term) ||
+                    (v.keywords && v.keywords.some(k => k.toLowerCase().includes(term)))
+                );
+            }
+
+            return filtered;
+        }
+
+        function renderVideos() {
+            const filtered = filterVideos();
+            const grid = document.getElementById('videoGrid');
+            const emptyState = document.getElementById('emptyState');
+            const resultsCount = document.getElementById('resultsCount');
+
+            resultsCount.textContent = `显示 ${filtered.length} 个视频`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            grid.innerHTML = filtered.map(video => `
+                <article class="video-card">
+                    ${video.imageUrl ? `<img class="card-image" src="${video.imageUrl}" alt="${video.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="card-image-placeholder" style="display:none;">🤖</div>` : '<div class="card-image-placeholder">🤖</div>'}
+                    <div class="card-header">
+                        <span class="year-badge ${video.year < 2026 ? 'older' : ''}">
+                            ${video.year}
+                        </span>
+                        <span class="date-badge">${formatDate(video.date)}</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${highlightText(video.title)}</h3>
+                        ${video.team ? `<span class="team-badge">${highlightText(video.team)}</span>` : ''}
+                        <p class="card-description">${highlightText(video.description)}</p>
+                        ${video.keywords && video.keywords.length > 0 ? `
+                            <div class="keywords">
+                                ${video.keywords.slice(0, 4).map(k => `<span class="keyword-tag">${k}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <span class="filename" title="${video.filename}">${video.filename}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function highlightText(text) {
+            if (!searchTerm || !text) return text;
+            const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
+            return text.replace(regex, '<mark style="background: #fef08a; padding: 0 2px; border-radius: 2px;">$1</mark>');
+        }
+
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            if (dateStr.length === 8) {
+                return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`;
+            }
+            return dateStr;
+        }
+
+        // Event Listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value.trim();
+            renderVideos();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentYear = btn.dataset.year;
+                renderVideos();
+            });
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
