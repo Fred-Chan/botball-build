@@ -39,19 +39,19 @@
         .header {
             background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
             color: white;
-            padding: 3rem 2rem;
+            padding: 1.5rem 2rem;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             letter-spacing: -0.02em;
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
@@ -59,13 +59,14 @@
 
         .header .pan-link {
             display: inline-block;
-            margin-top: 1.5rem;
-            padding: 0.75rem 1.5rem;
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
             background: rgba(255,255,255,0.2);
             border-radius: 50px;
             color: white;
             text-decoration: none;
             font-weight: 500;
+            font-size: 0.85rem;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
@@ -78,8 +79,8 @@
         .stats {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
+            gap: 1.5rem;
+            margin-top: 0.75rem;
             flex-wrap: wrap;
         }
 
@@ -88,13 +89,56 @@
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.25rem;
             font-weight: 700;
         }
 
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             opacity: 0.8;
+        }
+
+        .keyword-tags {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .keyword-tags h3 {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .keyword-tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .keyword-click-tag {
+            padding: 0.35rem 0.75rem;
+            background: #f1f5f9;
+            color: var(--text);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .keyword-click-tag:hover {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            border-color: var(--primary);
+        }
+
+        .keyword-click-tag.active {
+            background: var(--primary);
+            color: white;
         }
 
         .container {
@@ -418,9 +462,13 @@
     </header>
 
     <main class="container">
+        <div class="keyword-tags">
+            <h3>🏷️ 热门关键词</h3>
+            <div class="keyword-tags-list" id="keywordTagsList"></div>
+        </div>
         <div class="controls">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="搜索视频标题、团队或描述...">
+                <input type="text" id="searchInput" placeholder="搜索标题、团队、描述或关键词...">
             </div>
             <div class="filter-group">
                 <button class="filter-btn active" data-year="all">全部</button>
@@ -915,9 +963,49 @@
         let videos = videoData.videos;
         let currentYear = 'all';
         let searchTerm = '';
+        let selectedKeyword = '';
+
+        function extractKeywords() {
+            const keywordCount = {};
+            videos.forEach(v => {
+                if (v.keywords) {
+                    v.keywords.forEach(k => {
+                        keywordCount[k] = (keywordCount[k] || 0) + 1;
+                    });
+                }
+            });
+            return Object.entries(keywordCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 20)
+                .map(([keyword, count]) => ({ keyword, count }));
+        }
+
+        function renderKeywordTags() {
+            const keywords = extractKeywords();
+            const container = document.getElementById('keywordTagsList');
+            container.innerHTML = keywords.map(item => 
+                `<span class="keyword-click-tag" data-keyword="${item.keyword}">${item.keyword} (${item.count})</span>`
+            ).join('');
+
+            container.querySelectorAll('.keyword-click-tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const keyword = tag.dataset.keyword;
+                    if (selectedKeyword === keyword) {
+                        selectedKeyword = '';
+                        tag.classList.remove('active');
+                    } else {
+                        container.querySelectorAll('.keyword-click-tag').forEach(t => t.classList.remove('active'));
+                        selectedKeyword = keyword;
+                        tag.classList.add('active');
+                    }
+                    renderVideos();
+                });
+            });
+        }
 
         function loadData() {
             document.getElementById('totalCount').textContent = videos.length;
+            renderKeywordTags();
             renderVideos();
         }
 
@@ -928,11 +1016,17 @@
                 filtered = filtered.filter(v => v.year.toString() === currentYear);
             }
 
+            if (selectedKeyword) {
+                filtered = filtered.filter(v => 
+                    v.keywords && v.keywords.includes(selectedKeyword)
+                );
+            }
+
             if (searchTerm) {
                 const term = searchTerm.toLowerCase();
                 filtered = filtered.filter(v => 
                     v.title.toLowerCase().includes(term) ||
-                    v.team.toLowerCase().includes(term) ||
+                    (v.team && v.team.toLowerCase().includes(term)) ||
                     v.description.toLowerCase().includes(term) ||
                     (v.keywords && v.keywords.some(k => k.toLowerCase().includes(term)))
                 );
